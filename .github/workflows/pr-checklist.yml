@@ -1,0 +1,24 @@
+name: PR checklist
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  validate-checklist:
+    name: Validate PR checklist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate checklist in PR body
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const core = require('@actions/core')
+            const body = context.payload.pull_request && context.payload.pull_request.body ? context.payload.pull_request.body : ''
+            const lines = body.split(/\r?\n/)
+            const unchecked = lines.some(l => /^\s*[-*]\s*\[\s\]\s+/.test(l))
+            if (unchecked) {
+              core.setFailed('PR checklist incomplete — please check all boxes in the PR template before requesting approval.')
+            } else {
+              console.log('All checklist items are checked (or no unchecked boxes found).')
+            }
