@@ -17,50 +17,49 @@
 <!-- Link to related issues: Fixes #123, Relates to #456 -->
 
 
-## Evidence & Verification
-<!-- Please provide evidence that the changes work as expected -->
+## Evidence & Verification (REQUIRED)
+<!-- ⚠️ REQUIRED: All checkboxes below must be checked and evidence provided before PR can be merged -->
 
-### Project Build ✅
-- [ ] Project builds successfully without errors
-- **Build Output/Screenshot:**
+### Project Build ✅ (REQUIRED)
+- [ ] **Project builds successfully without errors**
+- **Build Output/Screenshot:** (REQUIRED - paste actual build output or attach screenshot)
   ```
-  Paste build confirmation or screenshot here
+  <!-- Replace this with actual build confirmation or screenshot -->
   ```
 
-### Test Coverage 📊
-- [ ] Unit tests added/updated
-- [ ] All tests pass locally
+### Test Coverage 📊 (REQUIRED)
+- [ ] **Unit tests added/updated**
+- [ ] **All tests pass locally**
 - [ ] Coverage report attached (if applicable)
-- **Coverage Details:**
+- **Coverage Details:** (REQUIRED - paste actual coverage report or attach screenshot)
   ```
-  Paste coverage report or screenshot here
+  <!-- Replace this with actual coverage report or screenshot -->
   ```
 
-### Schema Changes 🗄️
+### Schema Changes 🗄️ (REQUIRED - select at least one)
 - [ ] No schema changes required
 - [ ] Schema migration script included
 - [ ] Database schema updated
-- **Schema Changes Description:**
+- **Schema Changes Description:** (REQUIRED if schema changes selected)
   ```
-  Describe any database schema changes here
-  Paste migration script or DDL:
+  <!-- Replace this with actual schema changes description and migration script/DDL -->
   ```
 
-### Additional Verification
-- [ ] Code follows project style guidelines
+### Additional Verification (REQUIRED)
+- [ ] **Code follows project style guidelines**
 - [ ] No new warnings generated
 - [ ] Documentation updated (if applicable)
 - [ ] Dependency versions verified
 - [ ] Elasticsearch index mappings verified (if applicable)
 
-## Checklist
-- [ ] My code follows the style guidelines of this project
-- [ ] I have performed a self-review of my own code
+## Checklist (REQUIRED)
+- [ ] **My code follows the style guidelines of this project**
+- [ ] **I have performed a self-review of my own code**
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
 - [ ] My changes generate no new warnings
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] All new and existing tests passed locally
+- [ ] **I have added tests that prove my fix is effective or that my feature works**
+- [ ] **All new and existing tests passed locally**
 - [ ] I have tested this on the same environment as production
 
 ## Screenshots (if applicable)
@@ -69,4 +68,8 @@
 
 ## Additional Notes
 <!-- Any additional information reviewers should know -->
+
+---
+
+**⚠️ IMPORTANT:** This PR will not be mergeable until all REQUIRED checkboxes are checked and evidence is provided in the designated sections. The PR validation workflow will automatically check these requirements.
 

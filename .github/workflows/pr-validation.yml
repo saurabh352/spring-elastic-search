@@ -1,0 +1,84 @@
+name: PR Template Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  validate-pr-template:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate PR Template Requirements
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prBody = context.payload.pull_request.body;
+            const prNumber = context.payload.pull_request.number;
+
+            if (!prBody) {
+              core.setFailed('PR description is required');
+              return;
+            }
+
+            const errors = [];
+
+            // Check required checkboxes
+            const requiredCheckboxes = [
+              { pattern: /- \[x\] Project builds successfully without errors/, name: 'Project Build' },
+              { pattern: /- \[x\] All tests pass locally/, name: 'Test Coverage - All tests pass' },
+              { pattern: /- \[x\] Code follows project style guidelines/, name: 'Code Style Guidelines' },
+              { pattern: /- \[x\] I have performed a self-review of my own code/, name: 'Self-review' },
+              { pattern: /- \[x\] All new and existing tests passed locally/, name: 'All tests passed' }
+            ];
+
+            requiredCheckboxes.forEach(({ pattern, name }) => {
+              if (!pattern.test(prBody)) {
+                errors.push(`❌ ${name} checkbox must be checked`);
+              }
+            });
+
+            // Check for evidence sections with content
+            const evidenceSections = [
+              { section: 'Build Output/Screenshot:', name: 'Project Build Evidence' },
+              { section: 'Coverage Details:', name: 'Test Coverage Evidence' }
+            ];
+
+            evidenceSections.forEach(({ section, name }) => {
+              const sectionIndex = prBody.indexOf(section);
+              if (sectionIndex === -1) {
+                errors.push(`❌ ${name} section is missing`);
+                return;
+              }
+
+              // Look for content after the section header until next section or end
+              const contentStart = sectionIndex + section.length;
+              const nextSectionPattern = /^##\s|^###\s|^- \[|^```/m;
+              const nextSectionMatch = prBody.slice(contentStart).match(nextSectionPattern);
+              const contentEnd = nextSectionMatch ? contentStart + nextSectionMatch.index : prBody.length;
+              const content = prBody.slice(contentStart, contentEnd).trim();
+
+              if (!content || content === 'Paste build confirmation or screenshot here' ||
+                  content === 'Paste coverage report or screenshot here' ||
+                  content === 'Describe any database schema changes here') {
+                errors.push(`❌ ${name} must contain actual evidence (not placeholder text)`);
+              }
+            });
+
+            // Check schema changes requirement
+            const noSchemaChanges = /- \[x\] No schema changes required/.test(prBody);
+            const schemaMigration = /- \[x\] Schema migration script included/.test(prBody);
+            const schemaUpdated = /- \[x\] Database schema updated/.test(prBody);
+
+            if (!noSchemaChanges && !schemaMigration && !schemaUpdated) {
+              errors.push('❌ At least one schema changes option must be selected');
+            }
+
+            if (errors.length > 0) {
+              const errorMessage = `## 🚫 PR Validation Failed\n\nThe following requirements must be met before this PR can be merged:\n\n${errors.join('\n')}\n\nPlease update your PR description to meet all requirements.`;
+              core.setFailed(errorMessage);
+            } else {
+              console.log('✅ All PR template requirements met!');
+            }
